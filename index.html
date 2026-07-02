@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard - Exemplo Alura</title>
+  <!-- Fonte: Inter via Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #0f1724;           /* fundo escuro */
+      --card: #0b1220;         /* card / sidebar */
+      --muted: #94a3b8;       /* texto secundário */
+      --accent: #7c3aed;      /* cor principal (violeta) */
+      --accent-2: #06b6d4;    /* cor secundária (ciano) */
+      --success: #10b981;
+      --danger: #ef4444;
+      --glass: rgba(255,255,255,0.03);
+      --mono: 'SFMono-Regular', ui-monospace, SFMono, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+      --ui-font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: linear-gradient(180deg,var(--bg), #061226 80%);
+      color: #e6eef8;
+      font-family:var(--ui-font);
+      -webkit-font-smoothing:antialiased;
+      line-height:1.4;
+      padding:24px;
+    }
+
+    .app{
+      display:flex;
+      gap:24px;
+      max-width:1100px;
+      margin:0 auto;
+      align-items:flex-start;
+    }
+
+    /* Sidebar / Dashboard */
+    .sidebar{
+      width:280px;
+      background:linear-gradient(180deg,var(--card), rgba(12,17,28,0.6));
+      border-radius:12px;
+      padding:20px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+      flex-shrink:0;
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;margin-bottom:18px
+    }
+    .logo{
+      width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:18px
+    }
+    h1{font-size:18px;margin:0}
+    p.lead{margin:4px 0 0;color:var(--muted);font-size:13px}
+
+    .menu{margin-top:18px}
+    .menu-item{
+      display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:8px;margin-bottom:8px;color:#d9e6ff;cursor:pointer;
+      transition:all .18s ease;
+    }
+    .menu-item:hover{transform:translateY(-2px);background:var(--glass)}
+    .menu-item.active{background:linear-gradient(90deg, rgba(124,58,237,0.14), rgba(6,182,212,0.06));box-shadow:inset 0 0 0 1px rgba(124,58,237,0.08)}
+
+    .menu-item .left{display:flex;align-items:center;gap:10px}
+    .menu-item .icon{width:34px;height:34;border-radius:8px;background:rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center;font-weight:600}
+    .menu-item small{display:block;color:var(--muted);font-size:12px}
+
+    /* Área principal */
+    .main{
+      flex:1;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;padding:22px;min-height:520px;
+      box-shadow: 0 8px 28px rgba(2,6,23,0.5);
+    }
+    .main-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    .main-header h2{margin:0}
+    .controls{display:flex;gap:10px;align-items:center}
+    .btn{background:var(--accent);color:white;padding:8px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04)}
+
+    /* Card de código */
+    .code-card{background:#071023;padding:14px;border-radius:10px;margin-top:12px;border:1px solid rgba(255,255,255,0.02);box-shadow:0 8px 20px rgba(2,6,23,0.45)}
+    pre{margin:0;overflow:auto;padding:12px;border-radius:8px;background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));font-family:var(--mono);font-size:13px;color:#cfe9ff}
+    .code-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .chips{display:flex;gap:8px;align-items:center}
+    .chip{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:6px;font-size:12px;color:var(--muted)}
+
+    /* Links list (opções) */
+    .links{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+    .link-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);cursor:pointer}
+    .link-item small{color:var(--muted)}
+
+    /* Responsivo */
+    @media (max-width:880px){
+      .app{flex-direction:column;padding:12px}
+      .sidebar{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" role="navigation" aria-label="Menu principal">
+      <div class="brand">
+        <div class="logo">AL</div>
+        <div>
+          <h1>Alura - Demo</h1>
+          <p class="lead">Painel de controle • Lucas</p>
+        </div>
+      </div>
+
+      <nav class="menu" aria-label="Dashboard menu">
+        <div class="menu-item active" data-target="overview">
+          <div class="left"><div class="icon">D</div><div>
+            <strong>Dashboard</strong>
+            <small>Visão geral</small>
+          </div></div>
+          <div class="meta"><small>v1</small></div>
+        </div>
+
+        <div class="menu-item" data-target="code-lines">
+          <div class="left"><div class="icon">C</div><div>
+            <strong>Linhas de Código</strong>
+            <small>Exibe amostra de código</small>
+          </div></div>
+          <div class="meta"><small>JS/HTML</small></div>
+        </div>
+
+        <div class="menu-item" data-target="links">
+          <div class="left"><div class="icon">L</div><div>
+            <strong>Links</strong>
+            <small>Opções rápidas</small>
+          </div></div>
+          <div class="meta"><small>5</small></div>
+        </div>
+
+        <div class="menu-item" data-target="about">
+          <div class="left"><div class="icon">?</div><div>
+            <strong>Sobre</strong>
+            <small>Informações do projeto</small>
+          </div></div>
+          <div class="meta"><small>i</small></div>
+        </div>
+      </nav>
+
+      <div style="margin-top:18px;">
+        <div class="chip">Cor: <strong style="color:var(--accent);margin-left:6px">Violeta</strong></div>
+        <div class="chip" style="margin-top:10px">Fonte: <strong style="margin-left:6px">Inter</strong></div>
+      </div>
+    </aside>
+
+    <main class="main" id="main">
+      <div class="main-header">
+        <div>
+          <h2 id="main-title">Dashboard • Visão geral</h2>
+          <p class="lead" id="main-sub">Painel de exemplo com cores e tipografia alinhadas.</p>
+        </div>
+        <div class="controls">
+          <button class="btn" id="openDemo">Abrir demo</button>
+          <button class="btn ghost" id="copyPage">Copiar HTML</button>
+        </div>
+      </div>
+
+      <section id="content">
+        <div class="code-card" id="overview-card">
+          <div class="code-header">
+            <div>
+              <strong>Resumo</strong>
+              <div style="font-size:13px;color:var(--muted)">Exemplo de página criada com HTML, CSS e JavaScript embutidos.</div>
+            </div>
+            <div class="chips">
+              <div class="chip">Tema escuro</div>
+              <div class="chip">Responsivo</div>
+            </div>
+          </div>
+
+          <p style="color:var(--muted);font-size:14px">Use o menu à esquerda para ver as linhas de código de exemplo e as opções de links.</p>
+        </div>
+
+        <div class="code-card" id="code-card" style="display:none">
+          <div class="code-header">
+            <strong>Linhas de Código (exemplo)</strong>
+            <div><button class="btn ghost" id="copyCode">Copiar</button></div>
+          </div>
+          <pre id="code-block"><code>// 1 const saudacao = "Olá, mundo!";
+// 2 function soma(a, b) {
+// 3   return a + b;
+// 4 }
+// 5 // Exemplo de evento
+// 6 document.querySelector('#btn').addEventListener('click', () => console.log('clicou'));
+</code></pre>
+        </div>
+
+        <div class="code-card" id="links-card" style="display:none">
+          <div class="code-header">
+            <strong>Opções de links</strong>
+            <div class="chips"><div class="chip">Navegação</div></div>
+          </div>
+
+          <div class="links" id="links-list">
+            <div class="link-item" data-url="https://www.alura.com.br">
+              <div>
+                <strong>Alura</strong>
+                <div><small>Cursos e treinamentos</small></div>
+              </div>
+              <div><small>Abrir</small></div>
+            </div>
+
+            <div class="link-item" data-url="https://github.com">
+              <div>
+                <strong>GitHub</strong>
+                <div><small>Repositórios</small></div>
+              </div>
+              <div><small>Abrir</small></div>
+            </div>
+
+            <div class="link-item" data-url="#" id="link-local">
+              <div>
+                <strong>Link interno</strong>
+                <div><small>Ação local</small></div>
+              </div>
+              <div><small>Abrir</small></div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="code-card" id="about-card" style="display:none">
+          <div class="code-header"><strong>Sobre este projeto</strong></div>
+          <p style="color:var(--muted)">Arquivo único gerado para enviar ao repositório. Contém HTML, CSS e JavaScript embutidos e demonstra um menu "dashboard" com linhas de código e opções de links.</p>
+          <p style="color:var(--muted);font-size:13px;margin-top:8px">Créditos: Usuário lucasokazaki-eng</p>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Seleciona itens do menu e configura navegação local
+    const menuItems = document.querySelectorAll('.menu-item');
+    const sections = {
+      'overview': document.getElementById('overview-card'),
+      'code-lines': document.getElementById('code-card'),
+      'links': document.getElementById('links-card'),
+      'about': document.getElementById('about-card')
+    };
+    const mainTitle = document.getElementById('main-title');
+    const mainSub = document.getElementById('main-sub');
+
+    function setActive(targetKey){
+      menuItems.forEach(m => m.classList.toggle('active', m.dataset.target === targetKey));
+      // Mostrar a seção correspondente
+      Object.keys(sections).forEach(k => {
+        sections[k].style.display = (k === targetKey) ? 'block' : 'none';
+      });
+
+      // Atualiza título/subtítulo
+      const mapping = {
+        'overview': ['Dashboard • Visão geral', 'Painel de exemplo com cores e tipografia alinhadas.'],
+        'code-lines': ['Dashboard • Linhas de código', 'Trecho de código de exemplo e interação.'],
+        'links': ['Dashboard • Links', 'Opções rápidas disponíveis.'],
+        'about': ['Dashboard • Sobre', 'Informações do projeto.']
+      };
+      mainTitle.textContent = mapping[targetKey][0];
+      mainSub.textContent = mapping[targetKey][1];
+    }
+
+    menuItems.forEach(item => {
+      item.addEventListener('click', () => setActive(item.dataset.target));
+    });
+
+    // Copiar o bloco de código
+    document.getElementById('copyCode').addEventListener('click', async () => {
+      const txt = document.getElementById('code-block').innerText;
+      try{
+        await navigator.clipboard.writeText(txt);
+        alert('Código copiado para a área de transferência');
+      }catch(e){
+        alert('Não foi possível copiar automaticamente. Selecione e copie manualmente.');
+      }
+    });
+
+    // Copiar toda a página HTML (útil para enviar ou revisar)
+    document.getElementById('copyPage').addEventListener('click', async () => {
+      const full = document.documentElement.outerHTML;
+      try{
+        await navigator.clipboard.writeText(full);
+        alert('HTML completo copiado. Pronto para colar.');
+      }catch(e){
+        alert('Não foi possível copiar automaticamente. Use salvar como... no navegador.');
+      }
+    });
+
+    // Abrir demo: abre uma nova janela com o conteúdo atual (serializado)
+    document.getElementById('openDemo').addEventListener('click', () => {
+      const w = window.open('', '_blank');
+      w.document.write('<!doctype html>' + document.documentElement.outerHTML);
+      w.document.close();
+    });
+
+    // Links interativos
+    document.getElementById('links-list').addEventListener('click', (e) => {
+      const item = e.target.closest('.link-item');
+      if(!item) return;
+      const url = item.dataset.url || '#';
+      if(url === '#'){
+        alert('Ação interna executada! (exemplo)');
+      }else{
+        window.open(url, '_blank');
+      }
+    });
+
+    // Definir estado inicial
+    setActive('overview');
+  </script>
+</body>
+</html>
